@@ -7,5 +7,5 @@
 1. git clone 
 2. create virtual env (python -m venv venv). Activate: source venv/bin/activate
 3. pip install -r requirements.txt (install dependencies)
-4. execute command pytest root dit
+4. execute command pytest in root dit
 
