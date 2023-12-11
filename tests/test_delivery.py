@@ -1,28 +1,26 @@
-import pytest
-import allure
-from src.delivery import DeliveryPrice
-from src.model import Cargo, Size, WorkloadRate, CalculatePriceException
 from logging import getLogger
+
+import allure
+import pytest
+
+from src.delivery import DeliveryPrice
+from src.model import CalculatePriceException, Cargo, Size, WorkloadRate
 
 logger = getLogger(__name__)
 
 
 class TestDelivery:
-
     @allure.title("Get fee based on distance")
     @pytest.mark.parametrize(
-        "distance, expected", (
-                (1, 50),
-                (9, 100),
-                (10, 200),
-                (30, 300),
-                (100, 300)
-        ))
+        "distance, expected", ((1, 50), (9, 100), (10, 200), (30, 300), (100, 300))
+    )
     def test_distance(self, distance, expected) -> None:
         """
         checking dependencies distance from price (unit test)
         """
-        assert DeliveryPrice.get_fee_for_distance(distance) == expected, "Price is wrong"
+        assert (
+            DeliveryPrice.get_fee_for_distance(distance) == expected
+        ), "Price is wrong"
 
     @allure.title("Invalid distance value")
     @pytest.mark.parametrize("distance", (0, -1, "hello yandex"))
@@ -41,7 +39,7 @@ class TestDelivery:
         assert DeliveryPrice.get_fee_for_size(cargo) == expected, "Price is wrong"
 
     @allure.title("Get fee based on fragility")
-    @pytest.mark.parametrize("fragility, expected", ((True, 300),  (False, 0)))
+    @pytest.mark.parametrize("fragility, expected", ((True, 300), (False, 0)))
     def test_fragility(self, fragility, expected):
         """
         checking dependencies fragility from price (unit test)
@@ -69,11 +67,13 @@ class TestDelivery:
             DeliveryPrice(WorkloadRate.OTHER, cargo, 31).calculate_price()
 
     @allure.title("Check workload rate")
-    @pytest.mark.parametrize("rate", (WorkloadRate.VERY_HIGH, WorkloadRate.HIGH, WorkloadRate.OTHER))
+    @pytest.mark.parametrize(
+        "rate", (WorkloadRate.VERY_HIGH, WorkloadRate.HIGH, WorkloadRate.OTHER)
+    )
     def test_workload_rate(self, rate):
         """
         Check workload rate param
         """
         cargo = Cargo(Size.BIG, True)
         price = DeliveryPrice(rate, cargo, 20).calculate_price()
-        assert (300+200+200)*rate.value == price
+        assert (300 + 200 + 200) * rate.value == price

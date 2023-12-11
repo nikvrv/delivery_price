@@ -22,4 +22,5 @@ class Cargo:
 
 class CalculatePriceException(Exception):
     """Can't calculate price'"""
+
     pass
